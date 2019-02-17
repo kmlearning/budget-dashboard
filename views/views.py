@@ -1,80 +1,93 @@
-# View (Dashboard layout)
+import plotly.graph_objs as go
+from models import models
 
-def generate_table():
-    ''' 
-    Given a dataframe, return a table using dash components
+
+def draw_category_time_series(dates, values):
     '''
-    return
+    Create time series bar plot for weekly spending
 
-def on_load_division_options():
+    Arguments:
+        dates: list of datetime values for beginning of week
+        values: list of float values for total spending for week
+
+    Returns:
+        dictionary containing:
+            data: 
+                list of dictionary of x, y , name and type values
+            layout:
+                dictionary of plot title
     '''
-    Actions to perform on page load
-    '''
-    return
-
-# Set up dashboard and create layout
-
-
-
-import numpy as np
-
-
-app = dash.Dash(
-
-)
-app.css.append_css({
-    "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
-})
-
-app.layout = html.Div(
-    [
-        html.H1(children='My Budget :^)'),
-
-        dcc.Graph(
-            id='weekly_spend',
-            figure=go.Figure(
-                data = [
-                    go.Scatter(
-                        x = ['1-Oct', '8-Oct', '15-Oct', '22-Oct', '29-Oct'],
-                        y = [65, 68, 52, 60, 72],
-                        name = 'All'
-                    )
-                ],
-                layout = go.Layout(
-                    title = 'Total Weekly Spend'
-                )
-            )
-        ),
-        dcc.Graph(
-            id='by_category',
-            figure={
-                'data': [
-                    {
-                        'x': [425, 200, 170, 160, 120],
-                        'y': ['Rent', 'Groceries', 'Debt', 'Lunch'],
-                        'type': 'bar',
-                        'name': 'All',
-                        'orientation': 'h'
-                    }
-                ],
-                'layout': {
-                    'title': 'Spend by category'
-                }
+    figure={
+        'data': [
+            {
+                'x': dates,
+                'y': values,
+                'name': 'All',
+                'type': 'bar'
             }
-        ),
-        dcc.Graph(
-            id='category_hist',
-            figure=go.Figure(
-                data = [
-                    go.Histogram(
-                        x = np.random.randn(500),
-                        name = 'All'
-                    )
-                ],
-                layout = go.Layout(
-                    title = 'Category Spend Histogram'
-                )
+        ],
+        'layout': {
+            'title': 'Spend over time for category'
+        }
+    }
+    return figure
+
+def draw_spend_by_category_bar(totals, categories):
+    ''' 
+    Create bar plot layout, populate with input data and return 
+
+    Arguments:
+        totals: list of spending totals for each category
+        categories: list of categories
+
+    Returns:
+        figure:
+            a dictionary containing:
+                data:
+                    list of dictionary x, y, type, and name values
+                layout:
+                    dictionary of plot title
+    '''
+    figure={
+        'data': [
+            {
+                'x': totals,
+                'y': categories,
+                'type': 'bar',
+                'name': 'All',
+                'orientation': 'h'
+            }
+        ],
+        'layout': {
+            'title': 'Spend by category'
+        }
+    }
+    return figure
+
+def draw_spend_for_category_hist(weekly_totals):
+    '''
+    Create Dash figure for histogram of spending for each week for category
+
+    Arguments:
+        weekly_totals
+            list of total spending for each week for the category
+
+    Returns:
+        Dash figure graph object for histogram
+    '''
+    figure=go.Figure(
+        data = [
+            go.Histogram(
+                x = weekly_totals,
+                name = 'All',
+                xbins = dict(
+                    size= 'M2'
+                ),
+                autobinx = False
             )
+        ],
+        layout = go.Layout(
+            title = 'Category Spend Histogram'
         )
-    ]
-)
+    )
+    return figure

@@ -14,7 +14,7 @@ def get_database():
         return None, 'fail'
     return engine
 
-def get_connection(config_file=r'../instance/sql_config.yaml'):
+def get_connection(config_file=r'./config/sql_config.yaml'):
     """
     Set up database connection from yaml config file
     Input:
